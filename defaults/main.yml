@@ -1,0 +1,4 @@
+---
+keycloak_docker_image: "jboss/keycloak:6.0.1"
+postgresql_docker_image: "postgres:11-alpine"
+keycloak_host: "keycloak.integr8.me"

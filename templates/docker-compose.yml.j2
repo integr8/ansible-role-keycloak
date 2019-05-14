@@ -1,0 +1,60 @@
+version: '3.7'
+
+services:
+  postgres:
+      image: "{{ postgresql_docker_image }}"
+      networks:
+        - integr8
+      volumes:
+        - postgres_data:/var/lib/postgresql/data
+      environment:
+        POSTGRES_DB: keycloak
+        POSTGRES_USER: keycloak
+        POSTGRES_PASSWORD: password
+      deploy:
+        replicas: 1
+        placement:
+          constraints:
+            - node.role == worker
+
+  keycloak:
+      image: "{{ keycloak_docker_image }}"
+      networks:
+        - integr8
+      logging:
+        driver: gelf
+        options:
+          gelf-address: "udp://192.168.58.101:12201"
+      environment:
+        DB_VENDOR: POSTGRES
+        DB_ADDR: postgres
+        DB_DATABASE: keycloak
+        DB_USER: keycloak
+        DB_SCHEMA: public
+        DB_PASSWORD: password
+        KEYCLOAK_USER: admin
+        KEYCLOAK_PASSWORD: Pa55w0rd
+      ports:
+        - 8080
+      depends_on:
+        - postgres
+      deploy:
+        labels:
+          - traefik.enable=true
+          - traefik.backend=keycloak
+          - traefik.frontend.rule=Host:{{ keycloak_host }}
+          - traefik.port=8080
+          - traefik.docker.network=integr8
+          - traefik.backend.healthcheck.path=/auth
+        replicas: 1
+        placement:
+          constraints:
+            - node.role == worker
+networks:
+  integr8:
+    external: true
+    name: integr8
+
+volumes:
+  postgres_data:
+      driver: local
