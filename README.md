@@ -4,7 +4,7 @@ Keycloak
 
 Ansible role to deploy a container with Keycloak
 
-[![Build Status](https://travis-ci.org/integr8/ansible-role-jenkins.svg?branch=development)](https://travis-ci.org/integr8/ansible-role-jenkins)
+[![Build Status](https://travis-ci.org/integr8/ansible-role-keycloak.svg?branch=development)](https://travis-ci.org/integr8/ansible-role-keycloak)
 
 Requirements
 ------------
